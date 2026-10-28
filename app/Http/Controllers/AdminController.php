@@ -54,27 +54,50 @@ class AdminController extends Controller
         return view('admin.dashboard', compact('adminRequests', 'revisorRequests', 'writerRequests','financialData'));
     }
 
-    public function setAdmin(User $user){
+    public function setAdmin(Request $request, User $user){
         $user->is_admin = true;
         $user->save();
+
+        Log::warning('Role assigned', [
+            'role' => 'admin',
+            'target_user_id' => $user->id,
+            'target_email' => $user->email,
+            'performed_by' => Auth::id(),
+            'ip' => $request->ip(),
+        ]);
 
         return redirect(route('admin.dashboard'))->with('message', "$user->name is now administrator");
     }
 
-    public function setRevisor(User $user){
+    public function setRevisor(Request $request, User $user){
         $user->is_revisor = true;
         $user->save();
+
+        Log::warning('Role assigned', [
+            'role' => 'revisor',
+            'target_user_id' => $user->id,
+            'target_email' => $user->email,
+            'performed_by' => Auth::id(),
+            'ip' => $request->ip(),
+        ]);
 
         return redirect(route('admin.dashboard'))->with('message', "$user->name is now revisor");
     }
 
-    public function setWriter(User $user){
+    public function setWriter(Request $request, User $user){
         $user->is_writer = true;
         $user->save();
 
+        Log::warning('Role assigned', [
+            'role' => 'writer',
+            'target_user_id' => $user->id,
+            'target_email' => $user->email,
+            'performed_by' => Auth::id(),
+            'ip' => $request->ip(),
+        ]);
+
         return redirect(route('admin.dashboard'))->with('message', "$user->name is now writer");
     }
-
     public function editTag(Request $request, Tag $tag){
         $request->validate([
             'name' => 'required|unique:tags',

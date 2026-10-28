@@ -75,6 +75,12 @@ class ArticleController extends Controller implements HasMiddleware
             ]);
             $article->tags()->attach($newTag);
         }
+            Log::info('Article created', [
+            'article_id' => $article->id,
+            'title' => $article->title,
+            'user_id' => Auth::id(),
+            'ip' => $request->ip(),
+        ]);
 
         return redirect(route('homepage'))->with('message', 'Articolo creato con successo');
     }
@@ -141,7 +147,14 @@ class ArticleController extends Controller implements HasMiddleware
             ]);
             $newTags[] = $newTag->id;
         }
+
         $article->tags()->sync($newTags);
+        Log::info('Article updated', [
+            'article_id' => $article->id,
+            'title' => $article->title,
+            'user_id' => Auth::id(),
+            'ip' => $request->ip(),
+        ]);
 
         return redirect(route('writer.dashboard'))->with('message', 'Articolo modificato con successo');
     }
@@ -149,8 +162,15 @@ class ArticleController extends Controller implements HasMiddleware
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Article $article)
+    public function destroy(Request $request, Article $article)
     {
+            Log::warning('Article deleted', [
+            'article_id' => $article->id,
+            'title' => $article->title,
+            'author_id' => $article->user_id,
+            'user_id' => Auth::id(),
+            'ip' => $request->ip(),
+        ]);
         foreach ($article->tags as $tag) {
             $article->tags()->detach($tag);
         }
