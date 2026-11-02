@@ -8,7 +8,8 @@ use GuzzleHttp\Exception\RequestException;
 class HttpService
 {
     protected $client;
-    protected $allowedDomains = ['internal.finance','newsapi.org'];
+    protected $allowedDomains = ['newsapi.org'];
+    protected $adminOnlyDomains = ['internal.finance'];
     protected $allowedProtocols = ['http', 'https'];
     protected $refererHeader; // Intestazione Referer
 
